@@ -3,10 +3,19 @@
 {% block content %}
 
 <div class="page-header">
-  <h1>Login to begin.</h1>
+  <img id='deselectable' src="{{url_for('static', filename='logo.png')}}">
 </div>
-<img src="{{url_for('static', filename='logo.png')}}">
+
+<div class="login-button">
+  <a href="{{ url_for('login') }}">Login to Tinder</a>
+</div>
 <p></p>
-<input type="submit" name="matches" value="Autoswipe!">
+
+<ul>
+  {% for user in users %}
+    {{ user }}
+  {% endfor %}
+</ul>
+
 
 {% endblock %}

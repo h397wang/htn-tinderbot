@@ -14,6 +14,7 @@ import pynder
 import urllib
 import requests
 
+from wtforms import Form, BooleanField, StringField, PasswordField, validators
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -57,7 +58,7 @@ def home():
 def users():
     # get the token from here
     # https://www.facebook.com/dialog/oauth?client_id=464891386855067&redirect_uri=fbconnect%3A%2F%2Fsuccess&scope=basic_info%2Cemail%2Cpublic_profile%2Cuser_about_me%2Cuser_activities%2Cuser_birthday%2Cuser_education_history%2Cuser_friends%2Cuser_interests%2Cuser_likes%2Cuser_location%2Cuser_photos%2Cuser_relationship_details&response_type=token&__mref=message_bubble
-    token = "EAAGm0PX4ZCpsBAKXcPtcblFsJSfp6pQpBCQOSBFZB9ccLMsZAz0mpYVDe31vTNuVtuGxvGZAmXsglY0Pkipp1srHgRVfrXpWZBNFUwg98qRX9ZC0ILIQm9Qlo9Au0a4p9iBmdXUZAgIZCfQNLDVboEnMk96T6goK8NjMgsUtqaLm8gZDZD"
+    token = "EAAGm0PX4ZCpsBAM2uyxg6P4fhnEnr2zvwnp7uZAQQ7qeoGDcjG8xZBz2I6Yj5vTIpSZA13tXQlxCJJlcoezZAWvEABvZBSUSLzDcLt0jyRjMehmtqCHEr11pB58CJXnTvApHi6iZAU7P7J5GWm9Ki2KDyZAk6g80eeKXRhk8xGNZBlwZDZD"
     id = "591469779"
     session = pynder.Session(id, token)
     print("Session created")
@@ -70,16 +71,18 @@ def users():
     target = os.path.join(APP_ROOT, 'static')
     return render_template('pages/users.html')
 
-@app.route('/')
+@app.route('/login')
 def login():
+    import swipe
+    print('done')
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 
 
-# @app.route('/register')
-# def register():
-#     form = RegisterForm(request.form)
-#     return render_template('forms/register.html', form=form)
+@app.route('/register')
+def register():
+    form = RegisterForm(request.form)
+    return render_template('forms/register.html', form=form)
 
 
 @app.route('/forgot')
