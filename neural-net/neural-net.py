@@ -13,10 +13,9 @@ import theano.tensor as T
 import lasagne
 import random
 
-dataset_path = '../../tinder-bot/dataset/'
-pickle_dataset = dataset_path+'dataset.pickle'
+dataset_path = './dataset/'
+pickle_dataset = dataset_path+'dataset2.pickle'
 
-image = 'result/female/Zoe_Ball_0001.jpg'
 
 PIXELS = 28
 
