@@ -9,6 +9,11 @@ from logging import Formatter, FileHandler
 from forms import *
 import os
 
+# Pynder Imports
+import pynder
+import urllib
+import requests
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -24,8 +29,10 @@ def shutdown_session(exception=None):
     db_session.remove()
 '''
 
+APP_ROOT = os.path.dirname(os.path.abspath(__file__))
+
 # Login required decorator.
-'''
+
 def login_required(test):
     @wraps(test)
     def wrap(*args, **kwargs):
@@ -35,7 +42,7 @@ def login_required(test):
             flash('You need to login first.')
             return redirect(url_for('login'))
     return wrap
-'''
+
 #----------------------------------------------------------------------------#
 # Controllers.
 #----------------------------------------------------------------------------#
@@ -43,24 +50,36 @@ def login_required(test):
 
 @app.route('/')
 def home():
-    return render_template('pages/placeholder.home.html')
+    return render_template('pages/home.html')
 
+# Match button
+@app.route('/users')
+def users():
+    # get the token from here
+    # https://www.facebook.com/dialog/oauth?client_id=464891386855067&redirect_uri=fbconnect%3A%2F%2Fsuccess&scope=basic_info%2Cemail%2Cpublic_profile%2Cuser_about_me%2Cuser_activities%2Cuser_birthday%2Cuser_education_history%2Cuser_friends%2Cuser_interests%2Cuser_likes%2Cuser_location%2Cuser_photos%2Cuser_relationship_details&response_type=token&__mref=message_bubble
+    token = "EAAGm0PX4ZCpsBAKXcPtcblFsJSfp6pQpBCQOSBFZB9ccLMsZAz0mpYVDe31vTNuVtuGxvGZAmXsglY0Pkipp1srHgRVfrXpWZBNFUwg98qRX9ZC0ILIQm9Qlo9Au0a4p9iBmdXUZAgIZCfQNLDVboEnMk96T6goK8NjMgsUtqaLm8gZDZD"
+    id = "591469779"
+    session = pynder.Session(id, token)
+    print("Session created")
+    users = session.nearby_users()
+    photos = []
+    i=0
+    for user in users:
+        i+=1
+        urllib.urlretrieve(user.get_photos(width='172')[0], 'static/temp'+str(i)+'.jpg')
+    target = os.path.join(APP_ROOT, 'static')
+    return render_template('pages/users.html')
 
-@app.route('/about')
-def about():
-    return render_template('pages/placeholder.about.html')
-
-
-@app.route('/login')
+@app.route('/')
 def login():
     form = LoginForm(request.form)
     return render_template('forms/login.html', form=form)
 
 
-@app.route('/register')
-def register():
-    form = RegisterForm(request.form)
-    return render_template('forms/register.html', form=form)
+# @app.route('/register')
+# def register():
+#     form = RegisterForm(request.form)
+#     return render_template('forms/register.html', form=form)
 
 
 @app.route('/forgot')
@@ -97,7 +116,9 @@ if not app.debug:
 
 # Default port:
 if __name__ == '__main__':
+    app.debug = True
     app.run()
+    app.run(debug = True)
 
 # Or specify port manually:
 '''

@@ -1,0 +1,12 @@
+{% extends 'layouts/main.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1>Login to begin.</h1>
+</div>
+<img src="{{url_for('static', filename='logo.png')}}">
+<p></p>
+<input type="submit" name="matches" value="Autoswipe!">
+
+{% endblock %}
