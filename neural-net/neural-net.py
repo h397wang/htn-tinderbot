@@ -4,6 +4,7 @@ import os
 import time
 from PIL import Image
 from PIL import ImageOps
+from PIL import ImageFilter
 import pickle
 
 import theano
@@ -29,8 +30,8 @@ def load_dataset():
     num_test = num_images - num_train - num_val
     print("Total: {}, Train: {}, Val {}, Test {}".format(num_images, num_train, num_val, num_test))
 
-    X_train = np.zeros((num_train, 1, PIXELS, PIXELS), dtype='float32')
-    Y_train = np.zeros(num_train, dtype='uint8')
+    X_train = np.zeros((num_train*3, 1, PIXELS, PIXELS), dtype='float32')
+    Y_train = np.zeros(num_train*3, dtype='uint8')
     X_val = np.zeros((num_val, 1, PIXELS, PIXELS), dtype='float32')
     Y_val = np.zeros(num_val, dtype='uint8')
     X_test = np.zeros((num_test, 1, PIXELS, PIXELS), dtype='float32')
@@ -47,16 +48,24 @@ def load_dataset():
         img = Image.open(dataset_path+image['path'])
         img = ImageOps.fit(img, (PIXELS, PIXELS), Image.ANTIALIAS)
         img = img.convert('L')
+        img_blurred = img.filter(ImageFilter.SMOOTH)
+        img_flipped = img.transpose(Image.FLIP_LEFT_RIGHT)
 
         img = np.asarray(img, dtype = 'float32') / 255.
+        img_blurred = np.asarray(img_blurred, dtype = 'float32') / 255.
+        img_flipped = np.asarray(img_flipped, dtype = 'float32') / 255.
 
         X_train[i][0] = img
+        X_train[i+1][0] = img_blurred
+        X_train[i+2][0] = img_flipped
         Y_train[i] = int(image['preference'])
+        Y_train[i+1] = int(image['preference'])
+        Y_train[i+2] = int(image['preference'])
         if Y_train[i] == 1:
             positive +=1
         else:
             negative +=1
-        i+=1
+        i+=3
 
     i = 0
     for image in val_images:
